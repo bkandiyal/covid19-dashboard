@@ -1,0 +1,22 @@
+.graticule {
+    fill: none;
+    stroke: #444;
+}
+
+.land {
+    fill: #aaa;
+    stroke: #444;
+}
+
+.outline {
+    fill: none;
+    stroke: #444;
+}
+
+#globalmap {
+    /* padding: 10px; */
+}
+
+#container {
+    margin-top: 10px;
+}
