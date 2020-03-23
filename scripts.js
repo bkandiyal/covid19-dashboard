@@ -212,7 +212,8 @@ Promise.all([
             DATA.active[k].dates[d] -= (DATA.recovered[k].dates[d] + DATA.deaths[k].dates[d]);
         }
     }
-
+    
+    d3.select('#date-slider').property('value', DATA.dates.length-1).attr('value', DATA.dates.length-1);
     setupUI();
     renderMap();
     loadData();
