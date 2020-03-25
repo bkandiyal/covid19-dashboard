@@ -215,7 +215,6 @@ $(document).ready(function() {
         d3.csv(URL_CONFIRMED),
         d3.csv(URL_RECOVERED),
         d3.csv(URL_DEATHS),
-        d3.json("countries-110m.json")
     ]).then(function(data) {
         DATA.dates = data[0].columns.slice(4, data[0].columns.length);
     
