@@ -127,11 +127,11 @@ function setupUI() {
     $('#date-slider').attr('max', DATA.dates.length-1);
 
     $('#btnPlay').on('click', function() {
-        if ($(this).attr('data-playing')) {
-            $(this).attr('data-playing', 0).text('Play');
+        if ($(this).attr('data-playing') == 'true') {
+            $(this).attr('data-playing', 'false').text('Play');
             clearInterval(timer);
         } else {
-            $(this).attr('data-playing', 1).text('Pause');
+            $(this).attr('data-playing', 'true').text('Pause');
             timer = setInterval(stepTimer, 500);
         }
     });
