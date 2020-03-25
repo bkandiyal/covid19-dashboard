@@ -3,21 +3,77 @@
     <head>
         <!-- Required meta tags -->
         <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"> -->
+        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
         <title>COVID-19 Realtime Tracker</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"/>
+        <link href="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css" rel="stylesheet" />
         <link rel="stylesheet" href="style.css"/>
     </head>
 
     <body>
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
             <span class="navbar-brand mb-0 h1">COVID-19 Tracker</span>
             <span class=""><small>Developed by: <a href="mailto:bkandiyal@gmail.com">Bhaskar Kandiyal</a>, Data provided by <a href="https://github.com/CSSEGISandData/COVID-19">Johns Hopkins CSSE</a></small></span>
-        </nav>
+        </nav> -->        
+        <div id="menu">
+            <button class="btn btn-info btn-sm btn-block" type="button" data-toggle="collapse" data-target="#menu-inner-container" aria-expanded="true" aria-controls="menu-inner-container">
+                Menu
+            </button>
+            <div id="menu-inner-container" class="collapse show">
+                <div class="card" id="menu-inner">
+                    <span id="date-container" class="badge badge-secondary">Date:&nbsp;<span id="date"></span></span>
+                    <div id="type-buttons-container" class="btn-group-toggle" data-toggle="buttons">
+                        <label class="btn btn-outline-danger btn-sm btn-block">
+                            <input type="checkbox" value="confirmed" checked/>Confirmed&nbsp;
+                            <span id="total-confirmed" class="badge badge-danger"></span>
+                        </label>
+
+                        <label class="btn btn-outline-success btn-sm btn-block">
+                            <input type="checkbox" value="recovered"/>Recovered&nbsp;
+                            <span id="total-recovered" class="badge badge-success"></span>
+                        </label>
+
+                        <label class="btn btn-outline-secondary btn-sm btn-block">
+                            <input type="checkbox" value="deaths"/>Deaths&nbsp;
+                            <span id="total-deaths" class="badge badge-secondary"></span>
+                        </label>
+
+                        <label class="btn btn-outline-warning btn-sm btn-block">
+                            <input type="checkbox" value="active"/>Active&nbsp;
+                            <span id="total-active" class="badge badge-warning"></span>
+                        </label>
+                    </div>
+                    <span class="badge badge-secondary" style="margin-top:1em">Mortality Rate:&nbsp;<span id="mortality-rate"></span></span>
+                    <div class="btn-group-toggle" data-toggle="button">
+                        <button class="btn btn-outline-info btn-sm btn-block" style="margin-top:1em" data-toggle="collapse" data-target="#time-slider-container" aria-expanded="false" aria-controls="time-slider-container">
+                            Timeline
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- 
+        <div id="statistics-container">
+            <ul class="list list-unstyled list-inline">
+                <li class="list-inline-item"><span class="badge badge-danger stats-badge">Confirmed</span></li>
+                <li class="list-inline-item"><span class="badge badge-success stats-badge">Recovered</span></li>
+                <li class="list-inline-item"><span class="badge badge-secondary stats-badge">Deaths</span></li>
+                <li class="list-inline-item"><span class="badge badge-warning stats-badge">Active</span></li>
+            </ul>
+        </div> -->
+        <div id="globalmap"></div>
+        <div id="time-slider-container" class="collapse">
+            <div id="time-slider">
+                <button id="btnPlay" class="btn btn-info btn-sm">Play</button>
+                <input type="range" id="date-slider" min="0" max="" value="0" step="1" class="custom-range"/>
+            </div>
+        </div>
+        
         <div id="container" class="container-fluid">
-            <div class="row">
-                <div class="col-md-6 offset-md-3">
-                    <button id="btnPlay" class="btn btn-primary">Animate</button>
+            <!-- <div class="row">
+                <div class="">
+                    <button id="btnPlay" class="btn btn-primary btn-sm">Animate</button>
                     <span id="date" class="badge badge-pill badge-secondary">Date:</span>
                     <span class="badge badge-pill badge-danger">Total Confirmed: <span id="total-confirmed"></span></span>
                     <span class="badge badge-pill badge-success">Total Recovered: <span id="total-recovered"></span></span>
@@ -34,9 +90,11 @@
                         <option value="active" data-color="rgba(255, 208, 20, 0.8)">Active</option>
                     </select>
                 </div>
-            </div>
+            </div> -->
             <div class="row">
-                <svg id="globalmap" class="col offset-md-1"></svg><br/>
+                <div class="col">
+                </div>
+                <!-- <svg id="globalmap"></svg><br/> -->
             </div>
         </div>
 
@@ -46,6 +104,8 @@
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
         <script src="https://d3js.org/d3.v5.min.js"></script>
         <script src="topojson.min.js"></script>
+        <!-- <script src="map.js"></script> -->
+        <script src="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js"></script>
         <script src="scripts.js"></script>
     </body>
 </html>
