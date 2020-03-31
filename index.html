@@ -7,16 +7,54 @@
         <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
         <title>COVID-19 Realtime Tracker</title>
         <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous"/>
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.5/jquery.mobile-1.4.5.min.css" />
         <link href="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.css" rel="stylesheet" />
         <link rel="stylesheet" href="style.css"/>
     </head>
 
     <body>
-        <!-- <nav class="navbar navbar-expand-lg navbar-light bg-light">
-            <span class="navbar-brand mb-0 h1">COVID-19 Tracker</span>
-            <span class=""><small>Developed by: <a href="mailto:bkandiyal@gmail.com">Bhaskar Kandiyal</a>, Data provided by <a href="https://github.com/CSSEGISandData/COVID-19">Johns Hopkins CSSE</a></small></span>
-        </nav> -->        
-        <div id="menu">
+        <nav class="navbar fixed-bottom navbar-dark bg-dark navbar-expand-sm">
+            <a class="navbar-brand" href="#">COVID19 Tracker</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#nav-content" aria-controls="nav-content" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div id="nav-content" class="navbar-collapse collapse">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item"><a class="nav-link active navbutton" href="#home" data-parent="#container">Home</a></li>
+                    <li class="nav-item"><a class="nav-link navbutton" href="#map" data-parent="#container">Map</a></li>
+                    <li class="nav-item"><a class="nav-link navbutton" href="#about" data-parent="#container">About</a></li>
+                </ul>
+            </div>
+        </nav>
+
+        <div id="container" class="container-fluid">
+            <div id="home" class="show page">
+                <div class="row">
+                    <div class="col">
+                        <h4>Home</h4>
+                    </div>
+                </div>
+            </div>
+    
+            <div id="map" class="page">
+                <div id="time-slider-container" class="collapse ">
+                    <div id="time-slider">
+                        <button id="btnPlay" class="btn btn-info btn-sm">Play</button>
+                        <input type="range" id="date-slider" min="0" max="" value="0" step="1" class="custom-range"/>
+                    </div>
+                </div>
+            </div>
+    
+            <div id="about" class="page">
+                <div class="row">
+                    <div class="col">
+                        <h4>About</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="menu" class="hidden">
             <button class="btn btn-info btn-sm btn-block" type="button" data-toggle="collapse" data-target="#menu-inner-container" aria-expanded="true" aria-controls="menu-inner-container">
                 Menu
             </button>
@@ -53,59 +91,29 @@
                 </div>
             </div>
         </div>
-        <!-- 
-        <div id="statistics-container">
-            <ul class="list list-unstyled list-inline">
-                <li class="list-inline-item"><span class="badge badge-danger stats-badge">Confirmed</span></li>
-                <li class="list-inline-item"><span class="badge badge-success stats-badge">Recovered</span></li>
-                <li class="list-inline-item"><span class="badge badge-secondary stats-badge">Deaths</span></li>
-                <li class="list-inline-item"><span class="badge badge-warning stats-badge">Active</span></li>
-            </ul>
-        </div> -->
-        <div id="globalmap"></div>
-        <div id="time-slider-container" class="collapse">
-            <div id="time-slider">
-                <button id="btnPlay" class="btn btn-info btn-sm">Play</button>
-                <input type="range" id="date-slider" min="0" max="" value="0" step="1" class="custom-range"/>
-            </div>
-        </div>
-
-        <div id="container" class="container-fluid">
-            <!-- <div class="row">
-                <div class="">
-                    <button id="btnPlay" class="btn btn-primary btn-sm">Animate</button>
-                    <span id="date" class="badge badge-pill badge-secondary">Date:</span>
-                    <span class="badge badge-pill badge-danger">Total Confirmed: <span id="total-confirmed"></span></span>
-                    <span class="badge badge-pill badge-success">Total Recovered: <span id="total-recovered"></span></span>
-                    <span class="badge badge-pill badge-dark">Total Deaths: <span id="total-deaths"></span></span>
-                    <span class="badge badge-pill badge-warning">Total Active: <span id="total-active"></span></span>
-                    <span class="badge badge-pill badge-info">Mortality Rate: <span id="mortality-rate"></span></span>
-                    <input type="range" id="date-slider" min="0" max="" value="0" step="1" class="custom-range"/>
-                </div>
-                <div class="col">
-                    <select id="dataType">
-                        <option value="confirmed" data-color="rgba(255, 0, 0, 0.5)">Confirmed</option>
-                        <option value="recovered" data-color="rgba(0, 110, 20, 0.5)">Recovered</option>
-                        <option value="deaths" data-color="rgba(100, 0, 0, 0.8)">Deaths</option>
-                        <option value="active" data-color="rgba(255, 208, 20, 0.8)">Active</option>
-                    </select>
-                </div>
-            </div> -->
-            <div class="row">
-                <div class="col">
-                </div>
-                <!-- <svg id="globalmap"></svg><br/> -->
-            </div>
-        </div>
 
         <!-- Bootstrap Scripts -->
-        <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-        <!-- <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script> -->
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-        <script src="https://d3js.org/d3.v5.min.js"></script>
-        <!-- <script src="topojson.min.js"></script> -->
-        <!-- <script src="map.js"></script> -->
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-csv/1.0.9/jquery.csv.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.4.0/js/bootstrap.min.js"></script>
         <script src="https://api.mapbox.com/mapbox-gl-js/v1.8.1/mapbox-gl.js"></script>
         <script src="scripts.js"></script>
+        <script>
+            $(document).ready(function() {
+                $('.page').each(function() {
+                    if(!$(this).hasClass('show')) $(this).hide();
+                });
+
+                $('a.navbutton').on('click', function() {
+                    let id = $(this).attr('href');
+                    if ($(id).is(':visible')) return;
+                    let parent = $(this).attr('data-parent');
+                    $(parent+'>.page:visible').hide();
+                    $(id).show();
+                    map.resize();
+                });
+            });
+        </script>
     </body>
 </html>
