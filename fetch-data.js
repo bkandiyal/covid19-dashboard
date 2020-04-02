@@ -1,8 +1,6 @@
 const fs = require('fs');
-const path = require('path');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const d3 = require('d3');
 const csv = require('fast-csv');
 
 function addZ(n) { return (n<10)?'0'+n:''+n; }

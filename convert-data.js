@@ -1,8 +1,4 @@
-/**
- * Converts JHU data CSV files to month-wise JSON
- */
 const fs = require('fs');
-const path = require('path');
 const csv = require('fast-csv');
 
 function addZ(n) { return (n<10)?'0'+n:''+n; }
