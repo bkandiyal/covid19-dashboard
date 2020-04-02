@@ -2,17 +2,8 @@
   "name": "covid19-dashboard",
   "version": "0.1.0",
   "description": "COVID-19 Dashboard",
-  "watch": {
-    "build:browserify": {
-      "patterns": [
-        "scripts.js"
-      ]
-    }
-  },
   "scripts": {
-    "watch": "npm-watch",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build:browserify": "browserify -t babelify ./scripts.js | terser --mangle --compress > ./libs/bundle.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
@@ -25,18 +16,11 @@
   },
   "homepage": "https://github.com/bkandiyal/covid19-dashboard#readme",
   "dependencies": {
-    "jquery-csv": "^1.0.11",
-    "pouchdb-adapter-memory": "^7.2.1",
-    "rxdb": "^8.8.0",
-    "rxjs": "^6.5.4"
+    "axios": "^0.19.2",
+    "cheerio": "^1.0.0-rc.3",
+    "csv-parser": "^2.3.2",
+    "d3": "^5.15.0",
+    "d3-dsv": "^1.2.0"
   },
-  "devDependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-transform-async-to-generator": "^7.8.3",
-    "@babel/plugin-transform-runtime": "^7.9.0",
-    "@babel/preset-env": "^7.9.0",
-    "babelify": "^10.0.0",
-    "npm-watch": "^0.6.0",
-    "terser": "^4.6.7"
-  }
+  "devDependencies": {}
 }
