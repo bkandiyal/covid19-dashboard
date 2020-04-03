@@ -46,7 +46,8 @@ axios.all([
             }
         }
 
-        for (let i=4; i < keys.length; i++) {     
+        for (let i=4; i < keys.length; i++) {
+            if (+row[keys[i]] == 0) continue; // Skip zero figure entries
             let d = new Date(keys[i]);
             d = addZ(d.getDate())+'-'+addZ((d.getMonth()+1))+'-'+d.getFullYear();
 
@@ -59,18 +60,20 @@ axios.all([
                 object['Dates'][d][k][type] = +row[keys[i]];
         }
     }
+    
+    function commit() {
+        fs.writeFileSync('data/timeseries_global.json', JSON.stringify(DATA));
+    }
 
-    csv.parseString(c.data, {headers:true})
-        .on('data', (row) => processRow(DATA, 'Confirmed', row))
-        .on('end', () => {
-            csv.parseString(r.data, {headers:true}).on('data', row => processRow(DATA, 'Recovered', row))
-                .on('end', () => {
-                    csv.parseString(d.data, {headers: true}).on('data', row => processRow(DATA, 'Deaths', row))
-                    .on('end', () => fs.writeFileSync('data/timeseries_global.json', JSON.stringify(DATA)))
-                });
-        });
-        
+    Promise.all([
+        new Promise((resolve, reject) => {csv.parseString(c.data, {headers:true}).on('data', row => processRow(DATA, 'Confirmed', row)).on('end', () => resolve())}),
+        new Promise((resolve, reject) => {csv.parseString(r.data, {headers:true}).on('data', row => processRow(DATA, 'Recovered', row)).on('end', () => resolve())}),
+        new Promise((resolve, reject) => {csv.parseString(r.data, {headers:true}).on('data', row => processRow(DATA, 'Deaths', row)).on('end', () => resolve())}),
+    ]).then(function() {
+        console.log('Done');
+        commit();
+    });
 })).catch(error => {
-       console.log(error);
+    console.log(error);
 });
 

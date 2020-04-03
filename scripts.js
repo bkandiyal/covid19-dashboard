@@ -221,18 +221,16 @@ function setupMap() {
 $(document).ready(function() {
     $.ajax({
         type: 'GET',
-        url: 'https://coronadatascraper.com/timeseries.csv',
+        url: 'data/timeseries_global.json',
         dataType: 'text',
         success: function(resp) {
             console.log('Getting CSV...');
-            DATA.all = $.csv.toArrays(resp, {onParseValue: $.csv.hooks.castToScalar});
-            DATA.dates = getDates(DATA.all);
+            DATA.all = JSON.parse(resp);
+            console.log(DATA.all);
+            /* DATA.dates = getDates(DATA.all);
             DATA.dates.sort(function(a, b) {
                 return new Date(a) - new Date(b);
-            });
-            for (i in DATA.all[0]) {
-                DATA.header[DATA.all[0][i]] = i;
-            }
+            }); */
             setupMap();
         }
     });
