@@ -15,7 +15,7 @@ axios.all([
 
     var $ = cheerio.load(moh.data);
     let date = new Date($('#site-dashboard .status-update span').text().split(':').slice(1)[0].trim().split(',')[0]);
-    let t = addZ(date.getDate())+'-'+addZ((date.getMonth()+1))+'-'+date.getFullYear();
+    let t = addZ((date.getMonth()+1))+'/'+addZ(date.getDate())+'/'+date.getFullYear();
     console.log('Date: ' + t);
 
     $('#state-data .data-table table tbody').find('tr').each(function(i, e) {
@@ -40,6 +40,7 @@ axios.all([
         let location = row[keys[0]]+'/'+row[keys[1]];
         if (!object.Meta.Locations.hasOwnProperty(location)) {
             object.Meta.Locations[location] = {
+                Name: row[keys[0]],
                 Country: row[keys[1]],
                 Lat: row[keys[2]],
                 Long: row[keys[3]]
@@ -49,7 +50,7 @@ axios.all([
         for (let i=4; i < keys.length; i++) {
             if (+row[keys[i]] == 0) continue; // Skip zero figure entries
             let d = new Date(keys[i]);
-            d = addZ(d.getDate())+'-'+addZ((d.getMonth()+1))+'-'+d.getFullYear();
+            d = addZ((d.getMonth()+1))+'/'+addZ(d.getDate())+'/'+d.getFullYear();
 
             if (!object['Dates'].hasOwnProperty(d)) object['Dates'][d] = {};
             let k = row[keys[0]]+'/'+row[keys[1]];

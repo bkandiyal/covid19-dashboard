@@ -53,27 +53,27 @@ function setupMap() {
     map.on('load', function() {
         console.log('Map loaded');
 
-        let data = getDataForDate(DATA.all, DATA.dates[DATA.dates.length-1]);
+        // let data = getDataForDate(DATA.all, DATA.dates[DATA.dates.length-1]);
 
         map.addSource('confirmed', {
             type: 'geojson',
-            data: processPoints(data, 'cases'),
+            data: processPoints(DATA.all, DATA.dates[DATA.dates.length-2], 'Confirmed'),
         });
 
         map.addSource('recovered', {
             type: 'geojson',
-            data: processPoints(data, 'recovered'),
+            data: processPoints(DATA.all, DATA.dates[DATA.dates.length-2], 'Recovered'),
         });
 
         map.addSource('deaths', {
             type: 'geojson',
-            data: processPoints(data, 'deaths'),
+            data: processPoints(DATA.all, DATA.dates[DATA.dates.length-2], 'Deaths'),
         });
 
-        map.addSource('active', {
-            type: 'geojson',
-            data: processPoints(data, 'active'),
-        });
+        // map.addSource('active', {
+        //     type: 'geojson',
+        //     data: processPoints(data, 'active'),
+        // });
 
         map.addLayer({
             id: 'confirmed-bubbles',
@@ -81,12 +81,16 @@ function setupMap() {
             source: 'confirmed',
             paint: {
                 'circle-radius': [
-                    'step',
+                    /* 'step',
                     ['get', 'percentage'],
-                    6,2,
-                    12,5,
-                    50,
-                    100,100
+                    8,2,
+                    16,5,
+                    64,
+                    100,100 */
+                    'interpolate', ['linear'],
+                    ['get', 'percentage'],
+                    0.01, 6,
+                    100, 200
                 ],
                 'circle-color': 'rgb(255, 0, 0)',
                 'circle-opacity': 0.6,
@@ -144,7 +148,7 @@ function setupMap() {
             }
         });
 
-        map.addLayer({
+        /* map.addLayer({
             id: 'active-bubbles',
             type: 'circle',
             source: 'active',
@@ -165,7 +169,7 @@ function setupMap() {
                     100, 0.1
                 ]
             }
-        });
+        }); */
 
         let popup = new mapboxgl.Popup({
             closeButton: false,
@@ -179,14 +183,15 @@ function setupMap() {
             var coordinates = e.features[0].geometry.coordinates.slice();
             var description = `
                 <ul class="list list-unstyled">
-                    <li class="${(e.features[0].properties.state.length==0)?'d-none':''}">
-                        <strong>State:</strong> ${e.features[0].properties.state}
+                    <li class="${(e.features[0].properties.name.length==0)?'d-none':''}">
+                        <strong>State:</strong> ${e.features[0].properties.name}
                     </li>
                     <li class="">
                         <strong>Country:</strong> ${e.features[0].properties.country}
                     </li>
                     <li>
-                        <strong>Confirmed:</strong> ${e.features[0].properties.cases}
+                        <strong>Confirmed:</strong> ${e.features[0].properties.confirmed}
+                        <strong>Percentage:</strong> ${e.features[0].properties.percentage}
                     </li>
                     <li>
                         <strong>Coordinates:</strong> ${e.features[0].properties.lat} : ${e.features[0].properties.long}
@@ -226,11 +231,12 @@ $(document).ready(function() {
         success: function(resp) {
             console.log('Getting CSV...');
             DATA.all = JSON.parse(resp);
-            console.log(DATA.all);
-            /* DATA.dates = getDates(DATA.all);
+            for (d in DATA.all.Dates) {
+                DATA.dates.push(d);
+            }
             DATA.dates.sort(function(a, b) {
                 return new Date(a) - new Date(b);
-            }); */
+            });
             setupMap();
         }
     });
@@ -250,63 +256,70 @@ function stepTimer() {
         $('#date-slider').val(cnt).trigger('change');
 }
 
-function processPoints(data, type) {
+function processPoints(data, date, type) {
     console.log('Processing points for ' + type);
     let ret = {type: 'FeatureCollection', features:[]};
-    for (k in data) {
-        if (k == 0) continue; // Skip summary object
-        let e = data[k];
+    if (!data.Dates.hasOwnProperty(date)) return null;
+
+    let summary = {total_confirmed:0, total_recovered:0, total_deaths:0}
+    for (let d in data.Dates[date]) {
+        let e = data.Dates[date][d];
+        if (e.hasOwnProperty('Confirmed'))
+            summary.total_confirmed += e.Confirmed;
+        if (e.hasOwnProperty('Recovered'))
+            summary.total_recovered += e.Recovered;
+        if (e.hasOwnProperty('Deaths'))
+            summary.total_deaths += e.Deaths;
+    }
+
+    for (let d in data.Dates[date]) {
+        let e = data.Dates[date][d];
         if (e[type] == 0) continue;
-        // console.log(type + ' : ' + e[DATA.header[type]] + ' / ' + data[0]['total_'+type]);
-        // console.log(data[0]['total_'+type]);
-        // console.log(data[0]);
         ret.features.push({
             type: 'Feature',
             properties: {
                 'type':type,
-                'state':e[DATA.header['state']],
-                'country':e[DATA.header['country']],
-                'cases':e[DATA.header['cases']],
-                'recovered':e[DATA.header['recovered']],
-                'deaths':e[DATA.header['deaths']],
-                'active':e[DATA.header['active']],
-                'date':data[0].date,
-                'percentage':+((e[DATA.header[type]]/data[0]['total_'+type])*100).toFixed(2),
-                'lat': e[DATA.header['long']],
-                'long': e[DATA.header['lat']]
+                'name':data.Meta.Locations[d].Name,
+                'country':data.Meta.Locations[d].Country,
+                'confirmed':e['Confirmed'],
+                'recovered':e['Recovered'],
+                'deaths':e['Deaths'],
+                'active':e['Confirmed']-e['Recovered']-e['Deaths'],
+                'date':date,
+                'percentage':+((e[type]/summary['total_'+type.toLowerCase()])*100).toFixed(2),
+                'lat': +data.Meta.Locations[d].Lat,
+                'long': +data.Meta.Locations[d].Long
             },
             geometry: {
                 type: 'Point',
-                coordinates: [+e[DATA.header['long']], +e[DATA.header['lat']]]
+                coordinates: [+data.Meta.Locations[d].Long, +data.Meta.Locations[d].Lat]
             }
         });
     }
-    // console.log(ret);
     return ret;
 }
 
 function loadData() {
     var date = DATA.dates[$('#date-slider').val()];
-    console.log(date);    
     $('#date').text(date);
 
-    let data = getDataForDate(DATA.all, date);
+    // let data = getDataForDate(DATA.all, date);
 
-    let totalConfirmed = data[0].total_cases;
-    let totalRecovered = data[0].total_recovered;
-    let totalDeaths = data[0].total_deaths;
-    let totalActive = data[0].total_active;
+    // let totalConfirmed = data[0].total_cases;
+    // let totalRecovered = data[0].total_recovered;
+    // let totalDeaths = data[0].total_deaths;
+    // let totalActive = data[0].total_active;
 
-    map.getSource('confirmed').setData(processPoints(data, 'cases'));
-    map.getSource('recovered').setData(processPoints(data, 'recovered'));
-    map.getSource('deaths').setData(processPoints(data, 'deaths'));
-    map.getSource('active').setData(processPoints(data, 'active'));
+    map.getSource('confirmed').setData(processPoints(DATA.all, date, 'Confirmed'));
+    //map.getSource('recovered').setData(processPoints(data, 'Recovered'));
+    //map.getSource('deaths').setData(processPoints(data, 'Deaths'));
+    // map.getSource('active').setData(processPoints(data, 'active'));
 
-    $('#total-confirmed').html(totalConfirmed);
-    $('#total-recovered').html(totalRecovered);
-    $('#total-deaths').html(totalDeaths);
-    $('#total-active').html(totalActive);
-    $('#mortality-rate').html(((totalDeaths/totalConfirmed) * 100).toFixed(2)+'%');
+    // $('#total-confirmed').html(totalConfirmed);
+    // $('#total-recovered').html(totalRecovered);
+    // $('#total-deaths').html(totalDeaths);
+    // $('#total-active').html(totalActive);
+    // $('#mortality-rate').html(((totalDeaths/totalConfirmed) * 100).toFixed(2)+'%');
 }
 
 // UI Stuff
@@ -316,7 +329,7 @@ function setupUI() {
     map.setLayoutProperty('confirmed-bubbles', 'visibility', 'visible');
     map.setLayoutProperty('recovered-bubbles', 'visibility', 'none');
     map.setLayoutProperty('deaths-bubbles', 'visibility', 'none');
-    map.setLayoutProperty('active-bubbles', 'visibility', 'none');
+    // map.setLayoutProperty('active-bubbles', 'visibility', 'none');
 
     $('#total-confirmed').parent().removeClass('active');
     $('#total-recovered').parent().removeClass('active');
@@ -351,5 +364,5 @@ function setupUI() {
         }
     });
 
-    $('#date-slider').val(DATA.dates.length-1).trigger('change');
+    //$('#date-slider').val(DATA.dates.length-1).trigger('change');
 }

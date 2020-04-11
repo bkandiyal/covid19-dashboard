@@ -23,7 +23,9 @@ csv.parseString(fs.readFileSync('covid_19_india.csv'))
         cnt += 1;
         if (cnt == 0) return;
         r = processRow(row);
-        if (!timestamp_data['Dates'].hasOwnProperty(r[0])) timestamp_data['Dates'][r[0]] = {};
-        timestamp_data['Dates'][r[0]][row[1]+'/India'] = r[1];
+        let d = new Date(r[0]);
+        d = addZ((d.getMonth()+1))+'/'+addZ(d.getDate())+'/'+d.getFullYear();
+        if (!timestamp_data['Dates'].hasOwnProperty(d)) timestamp_data['Dates'][d] = {};
+        timestamp_data['Dates'][d][row[1]+'/India'] = r[1];
     })
     .on('end', () => fs.writeFileSync('data/timeseries_india.json', JSON.stringify(timestamp_data)));
