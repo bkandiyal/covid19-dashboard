@@ -69,7 +69,7 @@ axios.all([
     Promise.all([
         new Promise((resolve, reject) => {csv.parseString(c.data, {headers:true}).on('data', row => processRow(DATA, 'Confirmed', row)).on('end', () => resolve())}),
         new Promise((resolve, reject) => {csv.parseString(r.data, {headers:true}).on('data', row => processRow(DATA, 'Recovered', row)).on('end', () => resolve())}),
-        new Promise((resolve, reject) => {csv.parseString(r.data, {headers:true}).on('data', row => processRow(DATA, 'Deaths', row)).on('end', () => resolve())}),
+        new Promise((resolve, reject) => {csv.parseString(d.data, {headers:true}).on('data', row => processRow(DATA, 'Deaths', row)).on('end', () => resolve())}),
     ]).then(function() {
         console.log('Done');
         commit();
