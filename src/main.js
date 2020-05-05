@@ -20,9 +20,9 @@ var DATA = {
 }
 
 Promise.all([
-  d3.csv('/data/time_series_covid19_confirmed_global.csv'),
-  d3.csv('/data/time_series_covid19_recovered_global.csv'),
-  d3.csv('/data/time_series_covid19_deaths_global.csv')
+  d3.csv('https://bkandiyal.github.io/covid19-dataset/data/time_series_covid19_confirmed_global.csv'),
+  d3.csv('https://bkandiyal.github.io/covid19-dataset/data/time_series_covid19_recovered_global.csv'),
+  d3.csv('https://bkandiyal.github.io/covid19-dataset/data/time_series_covid19_deaths_global.csv')
 ]).then((values) => {
   DATA.confirmed.data = zb.parseNums(values[0].columns.slice(4), values[0])
   DATA.confirmed.columns = values[0].columns
