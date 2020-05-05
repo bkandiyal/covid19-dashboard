@@ -21,7 +21,8 @@
       color="primary"
       dark
       dense
-      :clipped-left="true">
+      :clipped-left="true"
+      :hide-on-scroll="true">
       <v-app-bar-nav-icon @click.stop="drawerModel = !drawerModel" class="d-lg-none"/>
       <v-toolbar-title>COVID19 Dashboard</v-toolbar-title>
     </v-app-bar>

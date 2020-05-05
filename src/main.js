@@ -13,16 +13,28 @@ Vue.config.productionTip = false
 
 Vue.use(VueRouter)
 
+window.nodeenv = process.env.NODE_ENV
+
 var DATA = {
   confirmed: {},
   recovered: {},
   deaths: {}
 }
 
+var urlPrefix = ''
+
+urlPrefix = 'https://bkandiyal.github.io/covid19-dataset/'
+
+var URL = {
+  confirmed: urlPrefix + 'data/time_series_covid19_confirmed_global.csv',
+  recovered: urlPrefix + 'data/time_series_covid19_recovered_global.csv',
+  deaths: urlPrefix + 'data/time_series_covid19_recovered_global.csv'
+}
+
 Promise.all([
-  d3.csv('https://bkandiyal.github.io/covid19-dataset/data/time_series_covid19_confirmed_global.csv'),
-  d3.csv('https://bkandiyal.github.io/covid19-dataset/data/time_series_covid19_recovered_global.csv'),
-  d3.csv('https://bkandiyal.github.io/covid19-dataset/data/time_series_covid19_deaths_global.csv')
+  d3.csv(URL.confirmed),
+  d3.csv(URL.recovered),
+  d3.csv(URL.deaths)
 ]).then((values) => {
   DATA.confirmed.data = zb.parseNums(values[0].columns.slice(4), values[0])
   DATA.confirmed.columns = values[0].columns

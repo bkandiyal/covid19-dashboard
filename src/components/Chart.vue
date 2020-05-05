@@ -31,7 +31,7 @@ export default {
     return {
       chart: null,
       logarithmic: false,
-      period: 7
+      period: 0
     }
   },
   mounted: function () {
@@ -40,10 +40,10 @@ export default {
       this.chart = new Chart(ctx, {
         type: this.type,
         data: {
-          labels: (this.period === 0) ? this.labels : this.labels.slice(Math.max(this.labels.length - this.period, 0)),
+          labels: (this.period === 0) ? this.labels : this.labels.slice(Math.max(this.labels.length - this.period, 1)),
           datasets: [{
             label: this.label,
-            data: (this.period === 0) ? this.values : this.values.slice(Math.max(this.values.length - this.period, 0)),
+            data: (this.period === 0) ? this.values : this.values.slice(Math.max(this.values.length - this.period, 1)),
             backgroundColor: this.color,
             borderColor: this.borderColor,
             borderWidth: this.borderWidth
@@ -58,11 +58,11 @@ export default {
   },
   watch: {
     labels: function (value) {
-      this.chart.data.labels = (this.period === 0) ? value : value.slice(Math.max(value.length - this.period, 0))
+      this.chart.data.labels = (this.period === 0) ? value : value.slice(Math.max(value.length - this.period, 1))
       this.chart.update()
     },
     values: function (value) {
-      this.chart.data.datasets[0].data = (this.period === 0) ? value : value.slice(Math.max(value.length - this.period, 0))
+      this.chart.data.datasets[0].data = (this.period === 0) ? value : value.slice(Math.max(value.length - this.period, 1))
       this.chart.update()
     },
     logarithmic: function (value) {
@@ -74,8 +74,8 @@ export default {
       this.chart.update()
     },
     period: function (value) {
-      this.chart.data.labels = (this.period === 0) ? this.labels : this.labels.slice(Math.max(this.labels.length - this.period, 0))
-      this.chart.data.datasets[0].data = (this.period === 0) ? this.values : this.values.slice(Math.max(this.values.length - this.period, 0))
+      this.chart.data.labels = (this.period === 0) ? this.labels : this.labels.slice(Math.max(this.labels.length - this.period, 1))
+      this.chart.data.datasets[0].data = (this.period === 0) ? this.values : this.values.slice(Math.max(this.values.length - this.period, 1))
       this.chart.update()
     }
   }

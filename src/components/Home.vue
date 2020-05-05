@@ -9,18 +9,18 @@
         </v-row>
         <v-row>
           <v-col>
-            <v-card class="pa-4" tile>
-              Total Confirmed: {{ totalConfirmed }}
+            <v-card class="pa-4" tile color="red lighten-4">
+              <span class="red--text font-weight-medium">Total Confirmed: {{ totalConfirmed }}</span>
             </v-card>
           </v-col>
           <v-col>
-            <v-card class="pa-4" tile>
-              Total Recovered: {{ totalRecovered }}
+            <v-card class="pa-4" tile color="green lighten-4">
+              <span class="green--text font-weight-medium">Total Recovered: {{ totalRecovered }}</span>
             </v-card>
           </v-col>
           <v-col>
-            <v-card class="pa-4" tile>
-              Total Deaths: {{ totalDeaths }}
+            <v-card class="pa-4" tile color="grey lighten-3">
+              <span class="grey--text text--darken-1 font-weight-medium">Total Deaths: {{ totalDeaths }}</span>
             </v-card>
           </v-col>
         </v-row>
@@ -28,30 +28,30 @@
         <v-row v-if="country === 'World'">
           <v-col>
             <Chart id="top-confirmed-countries"
-              type="horizontalBar" label="Top 10 Confirmed"
+              type="horizontalBar" label="Most Confirmed Cases"
               :labels="top10Countries.confirmed.countries"
               :values="top10Countries.confirmed.values"
-              color="rgba(255, 0, 0, 0.4)"
+              color="#F4433680"
               border-color="rgba(255, 0, 0, 0.8)">
             </Chart>
           </v-col>
 
           <v-col>
             <Chart id="top-recovered-countries"
-              type="horizontalBar" label="Top 10 Recovered"
+              type="horizontalBar" label="Most Recovered"
               :labels="top10Countries.recovered.countries"
               :values="top10Countries.recovered.values"
-              color="rgba(0, 255, 0, 0.4)"
+              color="#4CAF5080"
               border-color="rgba(0, 255, 0, 0.8)">
             </Chart>
           </v-col>
 
           <v-col>
             <Chart id="top-deaths-countries"
-              type="horizontalBar" label="Top 10 Deaths"
+              type="horizontalBar" label="Most Deaths"
               :labels="top10Countries.deaths.countries"
               :values="top10Countries.deaths.values"
-              color="rgba(0, 0, 100, 0.4)"
+              color="#9E9E9E80"
               border-color="rgba(0, 0, 100, 0.8)">
             </Chart>
           </v-col>
@@ -64,7 +64,7 @@
               :showControls="true"
               :labels="Object.keys(trend.confirmed)"
               :values="Object.values(trend.confirmed)"
-              color="rgba(255, 0, 0, 0.4)"
+              color="#F4433680"
               border-color="rgba(255, 0, 0, 0.8)">
             </Chart>
           </v-col>
@@ -74,8 +74,8 @@
               :showControls="true"
               :labels="Object.keys(trend.recovered)"
               :values="Object.values(trend.recovered)"
-              color="rgba(0, 255, 0, 0.4)"
-              border-color="rgba(0, 255, 0, 0.8)">
+              color="#4CAF5080"
+              border-color="#4CAF50CC">
             </Chart>
           </v-col>
           <v-col>
@@ -84,8 +84,8 @@
               :showControls="true"
               :labels="Object.keys(trend.deaths)"
               :values="Object.values(trend.deaths)"
-              color="rgba(0, 0, 255, 0.4)"
-              border-color="rgba(0, 0, 255, 0.8)">
+              color="#9E9E9E80"
+              border-color="#9E9E9ECC">
             </Chart>
           </v-col>
         </v-row>
@@ -153,17 +153,18 @@ export default {
     top10Countries: function () {
       const ret = { confirmed: {}, recovered: {}, deaths: {} }
       let t = zb.sortByCol('sum', 'dsc', zb.gbSum(this.currentDate, zb.groupBy(x => x['Country/Region'], this.confirmed)))
-      t = t.slice(1, 11)
+      t = t.filter((val) => { return val.group !== 'World' }).slice(0, 10)
+      console.log(t)
       ret.confirmed.values = zb.getCol('sum', t)
       ret.confirmed.countries = zb.getCol('group', t)
 
       t = zb.sortByCol('sum', 'dsc', zb.gbSum(this.currentDate, zb.groupBy(x => x['Country/Region'], this.recovered)))
-      t = t.slice(1, 11)
+      t = t.filter((val) => { return val.group !== 'World' }).slice(0, 10)
       ret.recovered.values = zb.getCol('sum', t)
       ret.recovered.countries = zb.getCol('group', t)
 
       t = zb.sortByCol('sum', 'dsc', zb.gbSum(this.currentDate, zb.groupBy(x => x['Country/Region'], this.deaths)))
-      t = t.slice(1, 11)
+      t = t.filter((val) => { return val.group !== 'World' }).slice(0, 10)
       ret.deaths.values = zb.getCol('sum', t)
       ret.deaths.countries = zb.getCol('group', t)
 
