@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "chart.js": "^2.9.3",
+    "chart.js": "^2.9.4",
     "chartjs-chart-geo": "^2.0.0",
     "core-js": "^3.6.4",
     "d3": "^5.16.0",
